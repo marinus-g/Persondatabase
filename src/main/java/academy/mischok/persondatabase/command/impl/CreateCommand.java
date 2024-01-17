@@ -9,7 +9,6 @@ public class CreateCommand implements ICommand {
     @Override
     public void handleCommand(String command, String[] args) {
 
-        System.getenv("test")
 
     }
 }
