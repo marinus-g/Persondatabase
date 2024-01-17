@@ -19,4 +19,18 @@ public class Person {
     private int salary;
     private int bonus;
 
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", country='" + country + '\'' +
+                ", birthday=" + birthday +
+                ", salary=" + salary +
+                ", bonus=" + bonus +
+                '}';
+    }
 }

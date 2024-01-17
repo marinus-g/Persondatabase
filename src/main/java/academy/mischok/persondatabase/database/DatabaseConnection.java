@@ -11,6 +11,7 @@ import java.sql.SQLException;
 public class DatabaseConnection {
 
     private final IDatabaseConfiguration configuration;
+    private boolean setup;
 
     @SneakyThrows
     public DatabaseConnection(IDatabaseConfiguration configuration) {
@@ -23,7 +24,7 @@ public class DatabaseConnection {
     public Connection getConnection() {
         // jdbc:mysql://localhost:3306
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + configuration.getServer() + ":3306",
+            return DriverManager.getConnection("jdbc:mysql://" + configuration.getServer() + ":3306" + (setup ? "/" + this.configuration.getDatabase() : "") ,
                     configuration.getUsername(), configuration.getPassword());
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -35,7 +36,7 @@ public class DatabaseConnection {
              PreparedStatement createSchema = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS "+ this.configuration.getDatabase() + ";");
              PreparedStatement selectSchema = connection.prepareStatement("USE " + this.configuration.getDatabase() + ";");
              PreparedStatement createTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS person (" +
-                     "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                     "id BIGINT PRIMARY KEY," +
                      "first_name VARCHAR(100) NOT NULL," +
                      "last_name VARCHAR(100) NOT NULL," +
                      "email VARCHAR(256) NOT NULL," +
@@ -51,6 +52,8 @@ public class DatabaseConnection {
             createTable.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.setup = true;
         }
     }
 }

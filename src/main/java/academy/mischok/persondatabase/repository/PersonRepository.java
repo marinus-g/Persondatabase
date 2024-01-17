@@ -17,28 +17,24 @@ public class PersonRepository {
 
     public void savePerson(final Person person) {
         try (final Connection connection = this.database.getConnection();
-             final PreparedStatement statement = connection.prepareStatement("INSERT INTO person SET first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ? " +
-                     "ON DUPLICATE KEY UPDATE first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ?;", PreparedStatement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, person.getFirstName());
-            statement.setString(2, person.getLastName());
-            statement.setString(3, person.getEmail());
-            statement.setString(4, person.getCountry());
-            statement.setDate(5, new java.sql.Date(person.getBirthday().getTime()));
-            statement.setInt(6, person.getSalary());
-            statement.setInt(7, person.getBonus());
-            statement.setString(8, person.getFirstName());
-            statement.setString(9, person.getLastName());
-            statement.setString(10, person.getEmail());
-            statement.setString(11, person.getCountry());
-            statement.setDate(12, new java.sql.Date(person.getBirthday().getTime()));
-            statement.setInt(13, person.getSalary());
-            statement.setInt(14, person.getBonus());
+             final PreparedStatement statement = connection.prepareStatement("INSERT INTO person SET id = ?, first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ? " +
+                     "ON DUPLICATE KEY UPDATE first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ?;")) {
+            statement.setLong(1, person.getId());
+            statement.setString(2, person.getFirstName());
+            statement.setString(3, person.getLastName());
+            statement.setString(4, person.getEmail());
+            statement.setString(5, person.getCountry());
+            statement.setDate(6, new java.sql.Date(person.getBirthday().getTime()));
+            statement.setInt(7, person.getSalary());
+            statement.setInt(8, person.getBonus());
+            statement.setString(9, person.getFirstName());
+            statement.setString(10, person.getLastName());
+            statement.setString(11, person.getEmail());
+            statement.setString(12, person.getCountry());
+            statement.setDate(13, new java.sql.Date(person.getBirthday().getTime()));
+            statement.setInt(14, person.getSalary());
+            statement.setInt(15, person.getBonus());
             statement.execute();
-            try (final ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    person.setId(generatedKeys.getLong(1));
-                }
-            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -80,13 +76,6 @@ public class PersonRepository {
         return results;
     }
 
-    public void test() {
-
-        // Wolfgang Metzger
-        // Wolfgang Kremer
-        List<Person> test = findPersonByFirstName("Wolfgang");
-    }
-
     public List<Person> findPersonByLastName(final String lastName) {
         final List<Person> results = new ArrayList<>();
         try (final Connection connection = this.database.getConnection();
@@ -125,7 +114,7 @@ public class PersonRepository {
         return false;
     }
 
-    public List<Person> findAllPersons() {
+    public List<Person> findAll() {
         final List<Person> results = new ArrayList<>();
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person;")) {
