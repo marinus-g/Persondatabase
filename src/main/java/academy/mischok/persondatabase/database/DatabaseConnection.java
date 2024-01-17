@@ -19,12 +19,10 @@ public class DatabaseConnection {
         Class.forName("com.mysql.cj.jdbc.Driver");
         this.setupDatabase();
     }
-// Class.forName("com.mysql.cj.jdbc.Driver");
-
     public Connection getConnection() {
-        // jdbc:mysql://localhost:3306
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + configuration.getServer() + ":3306" + (setup ? "/" + this.configuration.getDatabase() : "") ,
+            return DriverManager.getConnection("jdbc:mysql://" + configuration.getServer() + ":3306"
+                            + (this.setup ? "/" + this.configuration.getDatabase() : "") ,
                     configuration.getUsername(), configuration.getPassword());
         } catch (SQLException e) {
             throw new RuntimeException(e);
