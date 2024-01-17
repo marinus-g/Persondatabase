@@ -88,7 +88,7 @@ public class PersonRepository {
         return results;
     }
 
-    public List<Person> findByPersonByFirstOrLastName(final String firstOrLastName) {
+    public List<Person> findPersonByFirstOrLastName(final String firstOrLastName) {
         final List<Person> results = new ArrayList<>();
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE first_name = ? OR last_name = ?;")) {
