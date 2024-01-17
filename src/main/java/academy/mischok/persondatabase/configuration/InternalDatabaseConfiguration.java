@@ -4,7 +4,7 @@ public class InternalDatabaseConfiguration implements IDatabaseConfiguration {
 
     @Override
     public String getServer() {
-        return "localhost";
+        return "127.0.0.1";
     }
 
     @Override
@@ -14,11 +14,11 @@ public class InternalDatabaseConfiguration implements IDatabaseConfiguration {
 
     @Override
     public String getDatabase() {
-        return "Persondatabase";
+        return "persondatabase";
     }
 
     @Override
     public String getPassword() {
-        return "1234password";
+        return "2070";
     }
 }
