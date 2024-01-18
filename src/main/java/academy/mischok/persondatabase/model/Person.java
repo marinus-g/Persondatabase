@@ -16,8 +16,8 @@ public class Person {
     private @NonNull String email;
     private String country;
     private @NonNull Date birthday;
-    private int salary;
-    private int bonus;
+    private @NonNull Integer salary;
+    private Integer bonus;
 
 
     @Override

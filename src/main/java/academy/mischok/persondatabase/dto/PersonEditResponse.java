@@ -19,7 +19,7 @@ public class PersonEditResponse {
         return Optional.ofNullable(person);
     }
 
-    public boolean isCreated() {
+    public boolean isEdited() {
         return this.getPerson().isPresent();
     }
 

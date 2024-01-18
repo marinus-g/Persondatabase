@@ -12,5 +12,7 @@ public @interface Command {
 
     String description();
 
-    String[] arguments() default {};
+    String[] aliases() default {};
+
+    String usage() default "";
 }

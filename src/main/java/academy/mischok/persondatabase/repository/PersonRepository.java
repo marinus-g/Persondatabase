@@ -1,6 +1,7 @@
 package academy.mischok.persondatabase.repository;
 
 import academy.mischok.persondatabase.database.DatabaseConnection;
+import academy.mischok.persondatabase.database.query.FilterQuery;
 import academy.mischok.persondatabase.model.Person;
 
 import java.sql.*;
@@ -26,14 +27,22 @@ public class PersonRepository {
             statement.setString(5, person.getCountry());
             statement.setDate(6, new java.sql.Date(person.getBirthday().getTime()));
             statement.setInt(7, person.getSalary());
-            statement.setInt(8, person.getBonus());
+            if (person.getBonus() == null) {
+                statement.setNull(8, 4);
+            } else {
+                statement.setInt(8, person.getBonus());
+            }
             statement.setString(9, person.getFirstName());
             statement.setString(10, person.getLastName());
             statement.setString(11, person.getEmail());
             statement.setString(12, person.getCountry());
             statement.setDate(13, new java.sql.Date(person.getBirthday().getTime()));
             statement.setInt(14, person.getSalary());
-            statement.setInt(15, person.getBonus());
+            if (person.getBonus() == null) {
+                statement.setNull(15, 4);
+            } else {
+                statement.setInt(15, person.getBonus());
+            }
             statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -76,11 +85,11 @@ public class PersonRepository {
         return results;
     }
 
-    public List<Person> findPersonByLastName(final String lastName) {
+    public List<Person> findPersonByLastNameLike(final String lastName) {
         final List<Person> results = new ArrayList<>();
         try (final Connection connection = this.database.getConnection();
-             final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE last_name = ?;")) {
-            statement.setString(1, lastName);
+             final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE last_name LIKE ?;")) {
+            statement.setString(1, "%" + lastName + "%");
             this.findAllFromResultSet(results, statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -105,7 +114,7 @@ public class PersonRepository {
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("DELETE FROM person WHERE id = ?;")) {
             statement.setLong(1, person.getId());
-            if (statement.executeUpdate() == 0) {
+            if (!statement.execute() && statement.getUpdateCount() == 1) {
                 return true;
             }
         } catch (SQLException ex) {
@@ -138,15 +147,22 @@ public class PersonRepository {
         return 0L;
     }
 
+
     public boolean isEmpty() {
         return this.size() == 0;
     }
 
-    /*
-    public Optional<Person> findPersonByFilterQuery(FilterQuery query) {
-
+    @SuppressWarnings("SqlSourceToSinkFlow")
+    public List<Person> findByFilterQuery(FilterQuery filterQuery) {
+        final List<Person> result = new ArrayList<>();
+        try (final Connection connection = this.database.getConnection();
+        final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person " + filterQuery.buildFilter())) {
+            findAllFromResultSet(result, statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
-     */
 
     private void findAllFromResultSet(List<Person> results, PreparedStatement statement) throws SQLException {
         try (final ResultSet rs = statement.executeQuery()) {
@@ -162,6 +178,15 @@ public class PersonRepository {
                         rs.getInt("bonus")
                 ));
             }
+        }
+    }
+
+    public void deleteAll() {
+        try (final Connection connection = this.database.getConnection();
+        final PreparedStatement statement = connection.prepareStatement("TRUNCATE person")) {
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

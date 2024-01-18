@@ -1,23 +1,31 @@
 package academy.mischok.persondatabase;
 
+import academy.mischok.persondatabase.command.handler.CommandHandler;
 import academy.mischok.persondatabase.configuration.InternalDatabaseConfiguration;
 import academy.mischok.persondatabase.database.DatabaseConnection;
-import academy.mischok.persondatabase.dto.PersonCreateResponse;
-import academy.mischok.persondatabase.dto.PersonDto;
-import academy.mischok.persondatabase.model.Person;
 import academy.mischok.persondatabase.repository.PersonRepository;
 import academy.mischok.persondatabase.service.PersonService;
 import lombok.Getter;
 
 @Getter
 public class PersonDatabase {
+    private boolean isRunning = true;
     private final PersonService personService;
 
     PersonDatabase() {
         this.personService = new PersonService(new PersonRepository(new DatabaseConnection(new InternalDatabaseConfiguration())));
-        testThingy();
+        new CommandHandler(this.personService, this);
     }
 
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    /*
     private void testThingy() {
         final PersonDto wolfgangKremer = new PersonDto();
         wolfgangKremer.setFirstName("Wolfgang");
@@ -57,4 +65,5 @@ public class PersonDatabase {
             System.out.println(person.toString());
         }
     }
+     */
 }

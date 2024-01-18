@@ -1,0 +1,2 @@
+Achte darauf, dass ein LIKE Filter nur für VARCHAR Felder Sinn macht, numerische Felder sollten anders abgeglichen werden. -> Genau sollte < oder > nur bei numerischen Feldern verwendet werden.
+Validation sofort im Command ausführen, nicht erst im Service

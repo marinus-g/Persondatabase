@@ -1,5 +1,7 @@
 package academy.mischok.persondatabase.service;
 
+import academy.mischok.persondatabase.database.query.Filter;
+import academy.mischok.persondatabase.database.query.FilterQuery;
 import academy.mischok.persondatabase.dto.PersonCreateResponse;
 import academy.mischok.persondatabase.dto.PersonDto;
 import academy.mischok.persondatabase.dto.PersonEditResponse;
@@ -98,10 +100,13 @@ public class PersonService {
         return new PersonEditResponse(null, null, person);
     }
 
-    public boolean deleteResponse(Person person){
+    public boolean deletePerson(Person person){
         return this.personRepository.deletePerson(person);
     }
 
+    public List<Person> findByFilterQuery(FilterQuery filterQuery) {
+        return this.personRepository.findByFilterQuery(filterQuery);
+    }
 
     public Optional<Person> findPersonById(final long id) {
         return this.personRepository.findPersonById(id);
@@ -110,8 +115,8 @@ public class PersonService {
     public List<Person> findPersonByFirstName(final String firstName){
         return this.personRepository.findPersonByFirstName(firstName);
     }
-    public List<Person> findPersonByLastName(final String lastName){
-        return this.personRepository.findPersonByLastName(lastName);
+    public List<Person> findPersonByLastNameLike(final String lastName){
+        return this.personRepository.findPersonByLastNameLike(lastName);
     }
     public List<Person> findPersonByFirstOrLastName(final String firstOrLastName){
         return this.personRepository.findPersonByFirstOrLastName(firstOrLastName);
@@ -131,5 +136,9 @@ public class PersonService {
 
     private boolean isValidDate(final String date){
         return this.dateValidator.isValidString(date);
+    }
+
+    public void deleteAll() {
+        this.personRepository.deleteAll();
     }
 }

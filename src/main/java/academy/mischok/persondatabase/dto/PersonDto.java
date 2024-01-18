@@ -14,7 +14,7 @@ public class PersonDto {
     private String email;
     private String country;
     private String birthday;
-    private int salary;
-    private int bonus;
+    private Integer salary;
+    private Integer bonus;
 
 }
