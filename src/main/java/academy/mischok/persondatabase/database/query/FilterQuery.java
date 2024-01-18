@@ -30,7 +30,6 @@ public class FilterQuery {
         if (this.filterChain.isEmpty()) {
             return orderQuery != null ? orderQuery.buildDatabaseQuery() : ";";
         }
-        // SELECT * FROM person WHERE first_name = 'Wolfgang' AND/OR last_name = 'x
         final StringBuilder sb = new StringBuilder("WHERE ");
         for (int i = 0; i < this.filterChain.size(); i++) {
             final Filter filter = this.filterChain.get(i);
