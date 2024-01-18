@@ -21,6 +21,7 @@ public class FilterQuery {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public FilterQuery orderQuery(OrderQuery orderQuery) {
         this.orderQuery = orderQuery;
         return this;
