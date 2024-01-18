@@ -25,7 +25,6 @@ public class PersonService {
     private final StringValidator dateValidator = new DateValidator();
     public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
-        // * FROM person WHERE ? = ?;
     }
 
 

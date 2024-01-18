@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public abstract class AbstractCommand {
 
-
     public void handleCommand(String command, String[] args) {
     }
 

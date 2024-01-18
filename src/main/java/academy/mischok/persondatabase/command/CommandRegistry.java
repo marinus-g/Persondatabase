@@ -16,12 +16,10 @@ public class CommandRegistry {
     private final Set<InternalCommand> commands = new HashSet<>();
 
     private final PersonService personService;
-    private final Scanner scanner;
     private final PersonDatabase personDatabase;
 
-    public CommandRegistry(PersonService personService, Scanner scanner, PersonDatabase personDatabase) {
+    public CommandRegistry(PersonService personService, PersonDatabase personDatabase) {
         this.personService = personService;
-        this.scanner = scanner;
         this.personDatabase = personDatabase;
         try {
             registerCommands();
@@ -41,6 +39,7 @@ public class CommandRegistry {
                 FilterCommand.class,
                 PopulateCommand.class
         );
+
         for (final Class<? extends AbstractCommand> commandClass : clazzes) {
             final AbstractCommand abstractCommand = buildCommand(commandClass)
                     .orElseThrow(() -> new CommandConstructorNotFoundException("Constructor not found!"));
@@ -74,5 +73,4 @@ public class CommandRegistry {
                         (" " + commandAnnotation.usage()))
         );
     }
-
 }

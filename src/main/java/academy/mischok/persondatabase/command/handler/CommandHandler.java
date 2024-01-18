@@ -15,7 +15,8 @@ public class CommandHandler {
 
     public CommandHandler(PersonService personService, PersonDatabase personDatabase) {
         this.personDatabase = personDatabase;
-        this.registry = new CommandRegistry(personService, this.scanner = new Scanner(System.in), personDatabase);
+        this.scanner = new Scanner(System.in);
+        this.registry = new CommandRegistry(personService, personDatabase);
         this.handleScanner();
     }
 
