@@ -5,6 +5,7 @@ import academy.mischok.persondatabase.database.Operator;
 import academy.mischok.persondatabase.database.query.FilterType;
 import academy.mischok.persondatabase.database.query.OrderType;
 import academy.mischok.persondatabase.model.Person;
+import academy.mischok.persondatabase.validator.StringValidator;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
@@ -145,6 +146,25 @@ public class Utility {
             }
         }
         return orderType;
+    }
+
+    public boolean isInteger(final String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+
+    public static String getValidString(Scanner scanner, StringValidator validator, String message) {
+        String name = "";
+        do {
+            System.out.print(message);
+            name = scanner.nextLine();
+        } while (!validator.isValidString(name));
+        return name;
     }
 
     public void displayDatabase(List<Person> personList) {

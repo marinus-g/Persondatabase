@@ -20,11 +20,15 @@ import java.util.Optional;
 public class PersonService {
 
     private final PersonRepository personRepository;
-    private final StringValidator emailValidator = new EmailValidator();
-    private final StringValidator nameValidator = new NameValidator();
-    private final StringValidator dateValidator = new DateValidator();
-    public PersonService(PersonRepository personRepository) {
+    private final StringValidator emailValidator;
+    private final StringValidator nameValidator;
+    private final StringValidator dateValidator;
+    public PersonService(PersonRepository personRepository, StringValidator nameValidator,
+                         StringValidator emailValidator, StringValidator dateValidator) {
         this.personRepository = personRepository;
+        this.emailValidator = emailValidator;
+        this.nameValidator = nameValidator;
+        this.dateValidator = dateValidator;
     }
 
 

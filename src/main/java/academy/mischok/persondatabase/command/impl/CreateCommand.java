@@ -6,6 +6,9 @@ import academy.mischok.persondatabase.dto.PersonCreateResponse;
 import academy.mischok.persondatabase.dto.PersonDto;
 import academy.mischok.persondatabase.service.PersonService;
 import academy.mischok.persondatabase.util.Utility;
+import academy.mischok.persondatabase.validator.DateValidator;
+import academy.mischok.persondatabase.validator.EmailValidator;
+import academy.mischok.persondatabase.validator.NameValidator;
 
 import java.util.Scanner;
 
@@ -13,9 +16,16 @@ import java.util.Scanner;
 public class CreateCommand extends AbstractCommand {
 
     private final PersonService personService;
+    private final NameValidator nameValidator;
+    private final EmailValidator emailValidator;
+    private final DateValidator dateValidator;
 
-    public CreateCommand(PersonService personService) {
+    public CreateCommand(PersonService personService, NameValidator nameValidator,
+                         EmailValidator emailValidator, DateValidator dateValidator) {
         this.personService = personService;
+        this.nameValidator = nameValidator;
+        this.emailValidator = emailValidator;
+        this.dateValidator = dateValidator;
     }
 
     @Override
@@ -23,17 +33,13 @@ public class CreateCommand extends AbstractCommand {
 
         final PersonDto personDto = new PersonDto();
 
-        System.out.print("Gib einen Vornamen ein: ");
-        personDto.setFirstName(scanner.nextLine());
-        System.out.print("Gib einen Nachnamen ein: ");
-        personDto.setLastName(scanner.nextLine());
-        System.out.print("Gib eine Email-Adresse an: ");
-        personDto.setEmail(scanner.nextLine());
+        personDto.setFirstName(Utility.getValidString(scanner, nameValidator, "Gib einen validen Vornamen ein: "));
+        personDto.setLastName(Utility.getValidString(scanner, nameValidator, "Gib einen validen Nachnamen ein: "));
+        personDto.setEmail(Utility.getValidString(scanner, emailValidator, "Gib eine validen Email-Adresse ein: "));
         System.out.print("Gib ein Land an (Lasse leer, für keins): ");
         String input = scanner.nextLine();
         personDto.setCountry(input.isBlank() ? null : input);
-        System.out.print("Gib ein Geburtsdatum an (d.M.yyyy Format): ");
-        personDto.setBirthday(scanner.nextLine());
+        personDto.setBirthday(Utility.getValidString(scanner, dateValidator, "Gib ein valides Geburtsdatum an: "));
         System.out.print("Gib ein Gehalt an: ");
         personDto.setSalary(Utility.getIntegerFromScanner(scanner, "Gib ein Gehalt an: "));
         System.out.print("Gib einen Bonus an: (Lasse leer, für kein Gehalt): ");

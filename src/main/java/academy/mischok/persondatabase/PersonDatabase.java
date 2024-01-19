@@ -5,6 +5,9 @@ import academy.mischok.persondatabase.configuration.InternalDatabaseConfiguratio
 import academy.mischok.persondatabase.database.DatabaseConnection;
 import academy.mischok.persondatabase.repository.PersonRepository;
 import academy.mischok.persondatabase.service.PersonService;
+import academy.mischok.persondatabase.validator.DateValidator;
+import academy.mischok.persondatabase.validator.EmailValidator;
+import academy.mischok.persondatabase.validator.NameValidator;
 import lombok.Getter;
 
 @Getter
@@ -13,8 +16,20 @@ public class PersonDatabase {
     private final PersonService personService;
 
     PersonDatabase() {
-        this.personService = new PersonService(new PersonRepository(new DatabaseConnection(new InternalDatabaseConfiguration())));
-        new CommandHandler(this.personService, this);
+        final NameValidator nameValidator = new NameValidator();
+        final EmailValidator emailValidator = new EmailValidator();
+        final DateValidator dateValidator = new DateValidator();
+
+        this.personService = new PersonService(
+                new PersonRepository(new DatabaseConnection(new InternalDatabaseConfiguration())),
+                nameValidator,
+                emailValidator,
+                dateValidator
+        );
+        new CommandHandler(this.personService, this,
+                nameValidator,
+                emailValidator,
+                dateValidator);
     }
 
     public void setRunning(boolean running) {

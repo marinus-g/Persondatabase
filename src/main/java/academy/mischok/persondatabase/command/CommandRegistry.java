@@ -6,6 +6,9 @@ import academy.mischok.persondatabase.command.exception.CommandConstructorNotFou
 import academy.mischok.persondatabase.command.exception.CommandHandlerNotFoundException;
 import academy.mischok.persondatabase.command.impl.*;
 import academy.mischok.persondatabase.service.PersonService;
+import academy.mischok.persondatabase.validator.DateValidator;
+import academy.mischok.persondatabase.validator.EmailValidator;
+import academy.mischok.persondatabase.validator.NameValidator;
 import lombok.Getter;
 
 import java.util.*;
@@ -17,10 +20,17 @@ public class CommandRegistry {
 
     private final PersonService personService;
     private final PersonDatabase personDatabase;
+    private final NameValidator nameValidator;
+    private final EmailValidator emailValidator;
+    private final DateValidator dateValidator;
 
-    public CommandRegistry(PersonService personService, PersonDatabase personDatabase) {
+    public CommandRegistry(PersonService personService, PersonDatabase personDatabase, NameValidator nameValidator,
+                           EmailValidator emailValidator, DateValidator dateValidator) {
         this.personService = personService;
         this.personDatabase = personDatabase;
+        this.nameValidator = nameValidator;
+        this.emailValidator = emailValidator;
+        this.dateValidator = dateValidator;
         try {
             registerCommands();
         } catch (CommandConstructorNotFoundException | CommandHandlerNotFoundException e) {
@@ -58,11 +68,19 @@ public class CommandRegistry {
     private Optional<AbstractCommand> buildCommand(Class<? extends AbstractCommand> clazz) {
         return Arrays.stream(clazz.getConstructors()).map(CommandConstructor::new)
                 .filter(CommandConstructor::isValidParameters)
-                .map(commandConstructor -> commandConstructor.constructCommand(personService, this, personDatabase))
-                .findFirst();
+                .map(commandConstructor -> commandConstructor.constructCommand(
+                                personService,
+                                personDatabase,
+                                nameValidator,
+                                emailValidator,
+                                dateValidator,
+                                this
+                        )
+                ).findFirst();
     }
 
-    private InternalCommand buildInternalCommand(Class<? extends AbstractCommand> commandClass, AbstractCommand abstractCommand) throws CommandHandlerNotFoundException {
+    private InternalCommand buildInternalCommand(Class<? extends AbstractCommand> commandClass,
+                                                 AbstractCommand abstractCommand) throws CommandHandlerNotFoundException {
         final Command commandAnnotation = commandClass.getAnnotation(Command.class);
         return new InternalCommand(
                 abstractCommand,

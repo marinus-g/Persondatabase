@@ -4,6 +4,9 @@ import academy.mischok.persondatabase.PersonDatabase;
 import academy.mischok.persondatabase.command.AbstractCommand;
 import academy.mischok.persondatabase.command.CommandRegistry;
 import academy.mischok.persondatabase.service.PersonService;
+import academy.mischok.persondatabase.validator.DateValidator;
+import academy.mischok.persondatabase.validator.EmailValidator;
+import academy.mischok.persondatabase.validator.NameValidator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +17,13 @@ import java.util.List;
 
 public class CommandConstructor {
 
-    private static final List<Class<?>> VALID_CLASSES = Arrays.asList(PersonService.class, CommandRegistry.class, PersonDatabase.class);
+    private static final List<Class<?>> VALID_CLASSES = Arrays.asList(PersonService.class,
+            CommandRegistry.class,
+            PersonDatabase.class,
+            NameValidator.class,
+            EmailValidator.class,
+            DateValidator.class
+    );
 
     private final Constructor<?> constructor;
     private final Class<?>[] parameters;

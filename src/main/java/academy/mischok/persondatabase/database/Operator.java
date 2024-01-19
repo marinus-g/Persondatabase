@@ -29,4 +29,9 @@ public enum Operator {
         }
         return null;
     }
+
+    public static boolean isMetricOperator(Operator operator) {
+        return operator == Operator.BIGGER_OR_EQUAL_THAN || operator == Operator.BIGGER_THAN ||
+                operator == Operator.LESS_OR_EQUAL_THAN || operator == Operator.LESS_THAN;
+    }
 }

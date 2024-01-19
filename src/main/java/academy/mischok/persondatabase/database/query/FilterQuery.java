@@ -3,7 +3,9 @@ package academy.mischok.persondatabase.database.query;
 import academy.mischok.persondatabase.database.Operator;
 import academy.mischok.persondatabase.model.Person;
 import academy.mischok.persondatabase.service.PersonService;
+import academy.mischok.persondatabase.util.Utility;
 
+import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class FilterQuery {
     private final PersonService personService;
     private final List<Filter> filterChain = new ArrayList<>();
     private OrderQuery orderQuery;
+
     public FilterQuery(PersonService personService) {
         this.personService = personService;
     }
@@ -40,13 +43,12 @@ public class FilterQuery {
                         .append(" ");
             }
             sb
-                    .append(filter.operator() == Operator.EQUALS_IGNORE_CASE ?
-                            "LOWER(" + filter.column().getTableName() + ")" : filter.column().getTableName())
+                    .append(mapFieldName(filter))
                     .append(" ")
-                    .append(filter.operator().getDatabaseOperator())
+                    .append(mapOperator(filter))
                     .append(" ")
                     .append("'")
-                    .append(filter.operator() == Operator.EQUALS_IGNORE_CASE ? filter.value().toLowerCase() : filter.value())
+                    .append(mapFilterValue(filter))
                     .append("'");
         }
         if (orderQuery != null) {
@@ -55,6 +57,32 @@ public class FilterQuery {
             sb.append(";");
         }
         return sb.toString();
+    }
+
+    private String mapFilterValue(final Filter filter) {
+        if (filter.operator() == Operator.EQUALS_IGNORE_CASE) {
+            return filter.value().toLowerCase();
+        }
+        if (filter.operator() == Operator.LIKE && filter.column().getType() == JDBCType.VARCHAR) {
+            return "%" + filter.value() + "%";
+        }
+        return filter.value();
+    }
+
+    private String mapFieldName(final Filter filter) {
+        if (filter.operator() == Operator.EQUALS_IGNORE_CASE && filter.column().getType() == JDBCType.VARCHAR) {
+            return "LOWER(" + filter.column().getTableName() + ")";
+        }
+        return filter.column().getTableName();
+    }
+
+    public String mapOperator(final Filter filter) {
+        if (filter.operator() == Operator.LIKE && filter.column().getType() != JDBCType.VARCHAR) {
+            return Operator.EQUALS.getDatabaseOperator();
+        }
+        return Operator.isMetricOperator(filter.operator())
+                && !Utility.isInteger(filter.value()) ? Operator.EQUALS.getDatabaseOperator()
+                : filter.operator().getDatabaseOperator();
     }
 
     public List<Person> build() {
