@@ -8,6 +8,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 2070
     ports:
-      - 3306:3306
+      - 3307:3306
     expose:
-      - 3306
+      - 3307

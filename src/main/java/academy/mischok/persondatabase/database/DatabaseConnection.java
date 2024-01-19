@@ -21,7 +21,7 @@ public class DatabaseConnection {
     }
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + configuration.getServer() + ":3306"
+            return DriverManager.getConnection("jdbc:mysql://" + configuration.getServer() + ":3307"
                             + (this.setup ? "/" + this.configuration.getDatabase() : "") ,
                     configuration.getUsername(), configuration.getPassword());
         } catch (SQLException e) {

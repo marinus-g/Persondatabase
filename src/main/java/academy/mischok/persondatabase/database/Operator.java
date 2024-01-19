@@ -1,8 +1,10 @@
 package academy.mischok.persondatabase.database;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Operator {
 
     EQUALS("=", "WoGenau"),
@@ -17,10 +19,6 @@ public enum Operator {
     private final String databaseOperator;
     private final String clearName;
 
-    Operator(String databaseOperator, String clearName) {
-        this.databaseOperator = databaseOperator;
-        this.clearName = clearName;
-    }
 
     public static Operator getFromClearName(String str) {
         for (Operator value : values()) {

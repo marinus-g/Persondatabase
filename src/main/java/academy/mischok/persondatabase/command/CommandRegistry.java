@@ -47,7 +47,9 @@ public class CommandRegistry {
                 EditCommand.class,
                 ExitCommand.class,
                 FilterCommand.class,
-                PopulateCommand.class
+                PopulateCommand.class,
+                GuiCommand.class,
+                ClearCommand.class
         );
 
         for (final Class<? extends AbstractCommand> commandClass : clazzes) {
