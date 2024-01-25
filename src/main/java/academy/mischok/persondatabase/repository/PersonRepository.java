@@ -9,13 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The PersonRepository class provides methods for interacting with the database.
+ * It includes methods for saving, finding, deleting, and counting persons.
+ */
 public class PersonRepository {
     private final DatabaseConnection database;
 
+    /**
+     * Constructs a new PersonRepository with the given database connection.
+     *
+     * @param database the database connection to use
+     */
     public PersonRepository(DatabaseConnection database) {
         this.database = database;
     }
 
+    /**
+     * Saves a person to the database.
+     * If the person already exists, their details are updated.
+     *
+     * @param person the person to save
+     */
     public void savePerson(final Person person) {
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("INSERT INTO person SET id = ?, first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ? " +
@@ -49,6 +64,12 @@ public class PersonRepository {
         }
     }
 
+    /**
+     * Finds a person in the database by their ID.
+     *
+     * @param id the ID of the person to find
+     * @return an Optional containing the found person, or an empty Optional if no person was found
+     */
     public Optional<Person> findPersonById(final long id) {
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE id = ?;")) {
@@ -73,43 +94,12 @@ public class PersonRepository {
         return Optional.empty();
     }
 
-    public List<Person> findPersonByFirstName(final String firstName) {
-        final List<Person> results = new ArrayList<>();
-        try (final Connection connection = this.database.getConnection();
-             final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE first_name = ?;")) {
-            statement.setString(1, firstName);
-            findAllFromResultSet(results, statement);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return results;
-    }
-
-    public List<Person> findPersonByLastNameLike(final String lastName) {
-        final List<Person> results = new ArrayList<>();
-        try (final Connection connection = this.database.getConnection();
-             final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE last_name LIKE ?;")) {
-            statement.setString(1, "%" + lastName + "%");
-            this.findAllFromResultSet(results, statement);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return results;
-    }
-
-    public List<Person> findPersonByFirstOrLastName(final String firstOrLastName) {
-        final List<Person> results = new ArrayList<>();
-        try (final Connection connection = this.database.getConnection();
-             final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person WHERE first_name = ? OR last_name = ?;")) {
-            statement.setString(1, firstOrLastName);
-            statement.setString(2, firstOrLastName);
-            this.findAllFromResultSet(results, statement);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return results;
-    }
-
+    /**
+     * Deletes a person from the database.
+     *
+     * @param person the person to delete
+     * @return true if the person was deleted, false otherwise
+     */
     public boolean deletePerson(Person person) {
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("DELETE FROM person WHERE id = ?;")) {
@@ -123,6 +113,11 @@ public class PersonRepository {
         return false;
     }
 
+    /**
+     * Finds all persons in the database.
+     *
+     * @return a list of all persons
+     */
     public List<Person> findAll() {
         final List<Person> results = new ArrayList<>();
         try (final Connection connection = this.database.getConnection();
@@ -134,6 +129,11 @@ public class PersonRepository {
         return results;
     }
 
+    /**
+     * Counts the number of persons in the database.
+     *
+     * @return the number of persons
+     */
     public long size() {
         try (final Connection connection = this.database.getConnection();
              final PreparedStatement statement = connection.prepareStatement("SELECT COUNT(id) FROM person;");
@@ -148,10 +148,21 @@ public class PersonRepository {
     }
 
 
+    /**
+     * Checks if the database is empty.
+     *
+     * @return true if the database is empty, false otherwise
+     */
     public boolean isEmpty() {
         return this.size() == 0;
     }
 
+    /**
+     * Finds persons in the database that match the given filter query.
+     *
+     * @param filterQuery the filter query to use for finding persons
+     * @return a list of persons that match the filter query
+     */
     @SuppressWarnings("SqlSourceToSinkFlow")
     public List<Person> findByFilterQuery(FilterQuery filterQuery) {
         final List<Person> result = new ArrayList<>();
@@ -164,6 +175,13 @@ public class PersonRepository {
         return result;
     }
 
+
+    /**
+     * Processes the result set of a list of persons
+     * @param results the final list
+     * @param statement the statement the result set is built from
+     * @throws SQLException gets thrown if an exception occurs
+     */
     private void findAllFromResultSet(List<Person> results, PreparedStatement statement) throws SQLException {
         try (final ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
@@ -181,6 +199,9 @@ public class PersonRepository {
         }
     }
 
+    /**
+     * Deletes all persons from the database.
+     */
     public void deleteAll() {
         try (final Connection connection = this.database.getConnection();
         final PreparedStatement statement = connection.prepareStatement("TRUNCATE person")) {

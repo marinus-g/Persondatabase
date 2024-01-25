@@ -27,7 +27,6 @@ public class DatabaseView implements IView {
     private final Pane root;
     private final Scene scene;
     private final Map<UiColumn, Double> startPositions = new HashMap<>();
-
     private List<Person> persons = new ArrayList<>();
     private final Map<UiColumn, List<FieldComponent>> databaseComponents = new HashMap<>();
     @Getter
@@ -47,9 +46,7 @@ public class DatabaseView implements IView {
 
     private void init() {
         Button closeButton  = new Button("Close");
-        closeButton.setOnAction(event -> {
-            this.handleCloseRequest();
-        });
+        closeButton.setOnAction(event -> this.handleCloseRequest());
         closeButton.setLayoutX(500);
         this.personUi.getDatabaseApplication().getPrimaryStage().setTitle("Personendatenbank");
         this.personUi.getDatabaseApplication().getPrimaryStage().setScene(this.scene);

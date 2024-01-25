@@ -13,8 +13,16 @@ import lombok.Getter;
 
 import java.util.*;
 
+/**
+ * The CommandRegistry class is responsible for registering and managing commands within the application.
+ * It maintains a set of InternalCommand objects, each representing a command that can be executed.
+ * The class provides methods to register commands, find a command by its name, and build commands and internal commands.
+ */
 public class CommandRegistry {
 
+    /**
+     * The set of InternalCommand objects representing the commands that can be executed.
+     */
     @Getter
     private final Set<InternalCommand> commands = new HashSet<>();
 
@@ -24,6 +32,15 @@ public class CommandRegistry {
     private final EmailValidator emailValidator;
     private final DateValidator dateValidator;
 
+    /**
+     * Constructs a CommandRegistry object with the given parameters and registers the commands.
+     *
+     * @param personService the PersonService to use
+     * @param personDatabase the PersonDatabase to use
+     * @param nameValidator the NameValidator to use
+     * @param emailValidator the EmailValidator to use
+     * @param dateValidator the DateValidator to use
+     */
     public CommandRegistry(PersonService personService, PersonDatabase personDatabase, NameValidator nameValidator,
                            EmailValidator emailValidator, DateValidator dateValidator) {
         this.personService = personService;
@@ -38,6 +55,12 @@ public class CommandRegistry {
         }
     }
 
+    /**
+     * Registers the commands.
+     *
+     * @throws CommandConstructorNotFoundException if the constructor for a command is not found
+     * @throws CommandHandlerNotFoundException if the handler for a command is not found
+     */
     private void registerCommands() throws CommandConstructorNotFoundException, CommandHandlerNotFoundException {
         final List<Class<? extends AbstractCommand>> clazzes = Arrays.asList(
                 CreateCommand.class,
@@ -60,6 +83,12 @@ public class CommandRegistry {
         }
     }
 
+    /**
+     * Finds a command by its name.
+     *
+     * @param command the name of the command to find
+     * @return an Optional containing the found InternalCommand, or an empty Optional if the command is not found
+     */
     public Optional<InternalCommand> findCommand(String command) {
         return commands.stream()
                 .filter(internalCommand -> internalCommand.name().equalsIgnoreCase(command)
@@ -67,6 +96,12 @@ public class CommandRegistry {
                 .findFirst();
     }
 
+    /**
+     * Builds a command.
+     *
+     * @param clazz the class of the command to build
+     * @return an Optional containing the built AbstractCommand, or an empty Optional if the command cannot be built
+     */
     private Optional<AbstractCommand> buildCommand(Class<? extends AbstractCommand> clazz) {
         return Arrays.stream(clazz.getConstructors()).map(CommandConstructor::new)
                 .filter(CommandConstructor::isValidParameters)
@@ -81,6 +116,14 @@ public class CommandRegistry {
                 ).findFirst();
     }
 
+    /**
+     * Builds an internal command.
+     *
+     * @param commandClass the class of the command to build
+     * @param abstractCommand the AbstractCommand to use to build the internal command
+     * @return the built InternalCommand
+     * @throws CommandHandlerNotFoundException if the handler for the command is not found
+     */
     private InternalCommand buildInternalCommand(Class<? extends AbstractCommand> commandClass,
                                                  AbstractCommand abstractCommand) throws CommandHandlerNotFoundException {
         final Command commandAnnotation = commandClass.getAnnotation(Command.class);

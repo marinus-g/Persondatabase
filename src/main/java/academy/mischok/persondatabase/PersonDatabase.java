@@ -10,75 +10,58 @@ import academy.mischok.persondatabase.validator.EmailValidator;
 import academy.mischok.persondatabase.validator.NameValidator;
 import lombok.Getter;
 
+/**
+ * This class represents the main entry point for the PersonDatabase application.
+ * It initializes the necessary services, validators and command handlers.
+ */
 @Getter
 public class PersonDatabase {
+
+    // Flag to check if the application is running
     private boolean isRunning = true;
+
+    // Service to handle person related operations
     private final PersonService personService;
 
+    /**
+     * Constructor for the PersonDatabase class.
+     * It initializes the validators, service and command handler.
+     */
     PersonDatabase() {
+        // Validator for name
         final NameValidator nameValidator = new NameValidator();
+        // Validator for email
         final EmailValidator emailValidator = new EmailValidator();
+        // Validator for date
         final DateValidator dateValidator = new DateValidator();
 
+        // Initialize the person service with the necessary dependencies
         this.personService = new PersonService(
                 new PersonRepository(new DatabaseConnection(new InternalDatabaseConfiguration())),
                 nameValidator,
                 emailValidator,
                 dateValidator
         );
+        // Initialize the command handler with the necessary dependencies
         new CommandHandler(this.personService, this,
                 nameValidator,
                 emailValidator,
                 dateValidator);
     }
 
+    /**
+     * Setter for the isRunning field.
+     * @param running the new value for the isRunning field.
+     */
     public void setRunning(boolean running) {
         isRunning = running;
     }
 
+    /**
+     * Getter for the isRunning field.
+     * @return the current value of the isRunning field.
+     */
     public boolean isRunning() {
         return isRunning;
     }
-
-    /*
-    private void testThingy() {
-        final PersonDto wolfgangKremer = new PersonDto();
-        wolfgangKremer.setFirstName("Wolfgang");
-        wolfgangKremer.setLastName("Kremer");
-        wolfgangKremer.setEmail("wolfgang@kremer.de");
-        wolfgangKremer.setSalary(0);
-        wolfgangKremer.setBonus(0);
-        wolfgangKremer.setBirthday("1.1.1920");
-        wolfgangKremer.setCountry("Germany");
-
-        PersonCreateResponse response = this.personService.addPerson(wolfgangKremer);
-        System.out.println("WOlfgang Create: " + response.toString());
-
-        PersonDto invalidPerson = new PersonDto();
-        response = this.personService.addPerson(invalidPerson);
-        System.out.println("invalid 1: " + response);
-        invalidPerson.setFirstName("Test");
-        response = this.personService.addPerson(invalidPerson);
-        System.out.println("invalid 2: " + response);
-        invalidPerson.setFirstName("TEst");
-        response = this.personService.addPerson(invalidPerson);
-        System.out.println("invalid 3: " + response);
-        invalidPerson.setFirstName("Test");
-        invalidPerson.setLastName("Test");
-        invalidPerson.setEmail("wajkdwajd");
-        response = this.personService.addPerson(invalidPerson);
-        System.out.println("invalid 4: " + response);
-
-        final PersonDto marinusGerdes = new PersonDto();
-        marinusGerdes.setFirstName("Marinus");
-        marinusGerdes.setLastName("Gerdes");
-        marinusGerdes.setEmail("marinus@marinus.de");
-        marinusGerdes.setBirthday("");
-        response = this.personService.addPerson(marinusGerdes);
-        System.out.println("Marinus Create: " + response);
-        for (Person person : this.personService.findAll()) {
-            System.out.println(person.toString());
-        }
-    }
-     */
 }

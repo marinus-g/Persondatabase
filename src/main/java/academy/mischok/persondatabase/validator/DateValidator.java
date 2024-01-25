@@ -5,11 +5,29 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
-
+/**
+ * The DateValidator class implements the StringValidator interface.
+ * It provides a specific implementation of the isValidString method for validating dates.
+ */
 public class DateValidator implements StringValidator { // dd.MM.yyyy
 
-    private static Pattern pattern = Pattern.compile("^[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{4}$");
+    /**
+     * The pattern for the date format dd.MM.yyyy
+     */
+    private static final Pattern pattern = Pattern.compile("^[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{4}$");
+
+    /**
+     * The DateTimeFormatter for the date format d.M.yyyy
+     */
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy");
+
+    /**
+     * Checks if the provided string is a valid date.
+     * A valid date matches the pattern "^[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{4}$" and can be parsed into a LocalDate.
+     *
+     * @param string the date to validate
+     * @return true if the date is valid, false otherwise
+     */
     @Override
     public boolean isValidString(String string) {
         if (pattern.matcher(string).matches()) {
@@ -22,12 +40,5 @@ public class DateValidator implements StringValidator { // dd.MM.yyyy
             }
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        final DateValidator dateValidator = new DateValidator();
-        System.out.println(dateValidator.isValidString("12.3.2000"));
-        System.out.println(dateValidator.isValidString("99.99.9999"));
-        System.out.println(dateValidator.isValidString("3.13.2000"));
     }
 }
