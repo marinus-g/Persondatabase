@@ -51,8 +51,8 @@ public class PersonRepository {
             if (person.getId() != null) {
                 statement.setLong(8, person.getId());
             }
-            final int updateCount = statement.executeUpdate();
-            if (person.getId() == null && updateCount == 1) {
+            statement.executeUpdate();
+            if (person.getId() == null) {
                 try (ResultSet rs = statement.getGeneratedKeys()) {
                     if (rs.next()) {
                         person.setId(rs.getLong(1));
