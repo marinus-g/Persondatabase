@@ -63,7 +63,7 @@ public class DatabaseConnection {
              PreparedStatement createSchema = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS "+ this.configuration.getDatabase() + ";");
              PreparedStatement selectSchema = connection.prepareStatement("USE " + this.configuration.getDatabase() + ";");
              PreparedStatement createTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS person (" +
-                     "id BIGINT PRIMARY KEY," +
+                     "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
                      "first_name VARCHAR(100) NOT NULL," +
                      "last_name VARCHAR(100) NOT NULL," +
                      "email VARCHAR(256) NOT NULL," +

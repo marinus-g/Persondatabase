@@ -69,7 +69,7 @@ public class PersonService {
         }
 
         final Person person = new Person(
-                this.personRepository.size() + 1,
+                null,
                 personDto.getFirstName(),
                 personDto.getLastName(),
                 personDto.getEmail(),

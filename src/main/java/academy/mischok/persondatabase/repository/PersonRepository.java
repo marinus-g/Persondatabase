@@ -27,38 +27,38 @@ public class PersonRepository {
 
     /**
      * Saves a person to the database.
-     * If the person already exists, their details are updated.
+     * If the person already has an ID, their details are updated.
      *
      * @param person the person to save
      */
     public void savePerson(final Person person) {
         try (final Connection connection = this.database.getConnection();
-             final PreparedStatement statement = connection.prepareStatement("INSERT INTO person SET id = ?, first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ? " +
-                     "ON DUPLICATE KEY UPDATE first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ?;")) {
-            statement.setLong(1, person.getId());
-            statement.setString(2, person.getFirstName());
-            statement.setString(3, person.getLastName());
-            statement.setString(4, person.getEmail());
-            statement.setString(5, person.getCountry());
-            statement.setDate(6, new java.sql.Date(person.getBirthday().getTime()));
-            statement.setInt(7, person.getSalary());
+             final PreparedStatement statement = connection.prepareStatement((person.getId() == null ?
+                             "INSERT INTO person (first_name, last_name, email, country, birthday, salary, bonus) VALUES (?, ?, ?, ?, ?, ?, ?)" :
+                             "UPDATE person SET first_name = ?, last_name = ?, email = ?, country = ?, birthday = ?, salary = ?, bonus = ? WHERE id = ?"),
+                     Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, person.getFirstName());
+            statement.setString(2, person.getLastName());
+            statement.setString(3, person.getEmail());
+            statement.setString(4, person.getCountry());
+            statement.setDate(5, new java.sql.Date(person.getBirthday().getTime()));
+            statement.setInt(6, person.getSalary());
             if (person.getBonus() == null) {
-                statement.setNull(8, 4);
+                statement.setNull(7, 4);
             } else {
-                statement.setInt(8, person.getBonus());
+                statement.setInt(7, person.getBonus());
             }
-            statement.setString(9, person.getFirstName());
-            statement.setString(10, person.getLastName());
-            statement.setString(11, person.getEmail());
-            statement.setString(12, person.getCountry());
-            statement.setDate(13, new java.sql.Date(person.getBirthday().getTime()));
-            statement.setInt(14, person.getSalary());
-            if (person.getBonus() == null) {
-                statement.setNull(15, 4);
-            } else {
-                statement.setInt(15, person.getBonus());
+            if (person.getId() != null) {
+                statement.setLong(8, person.getId());
             }
-            statement.execute();
+            final int updateCount = statement.executeUpdate();
+            if (person.getId() == null && updateCount == 1) {
+                try (ResultSet rs = statement.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        person.setId(rs.getLong(1));
+                    }
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -167,7 +167,7 @@ public class PersonRepository {
     public List<Person> findByFilterQuery(FilterQuery filterQuery) {
         final List<Person> result = new ArrayList<>();
         try (final Connection connection = this.database.getConnection();
-        final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person " + filterQuery.buildFilter())) {
+             final PreparedStatement statement = connection.prepareStatement("SELECT * FROM person " + filterQuery.buildFilter())) {
             findAllFromResultSet(result, statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -178,7 +178,8 @@ public class PersonRepository {
 
     /**
      * Processes the result set of a list of persons
-     * @param results the final list
+     *
+     * @param results   the final list
      * @param statement the statement the result set is built from
      * @throws SQLException gets thrown if an exception occurs
      */
@@ -204,7 +205,7 @@ public class PersonRepository {
      */
     public void deleteAll() {
         try (final Connection connection = this.database.getConnection();
-        final PreparedStatement statement = connection.prepareStatement("TRUNCATE person")) {
+             final PreparedStatement statement = connection.prepareStatement("TRUNCATE person")) {
             statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);

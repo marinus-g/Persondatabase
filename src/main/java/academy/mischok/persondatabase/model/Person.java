@@ -17,7 +17,7 @@ public class Person {
     /**
      * The ID of the person.
      */
-    private long id;
+    private Long id;
 
     /**
      * The first name of the person.
