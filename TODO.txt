@@ -1,0 +1,1 @@
+Validation sofort im Command ausführen, nicht erst im Service
