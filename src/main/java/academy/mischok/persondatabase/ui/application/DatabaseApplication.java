@@ -38,8 +38,5 @@ public class DatabaseApplication extends Application {
         Platform.setImplicitExit(false);
         PersonUi.PERSON_UI.setDatabaseApplication(this);
         PersonUi.PERSON_UI.init();
-        Platform.runLater(() -> System.out.println("HALLOOO"));
     }
-
-
 }

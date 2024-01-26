@@ -125,5 +125,4 @@ public class EditCommand extends AbstractCommand {
             }
         }, () -> System.out.println("Person konnte nicht gefunden werden!"));
     }
-
 }
