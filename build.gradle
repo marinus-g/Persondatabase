@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 javafx {
@@ -35,7 +36,16 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
-
-test {
-    useJUnitPlatform()
+shadowJar {
+    archiveBaseName.set("person-database")
+    archiveVersion.set('0.1.0')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'academy.mischok.persondatabase.Main'
+    }
+}
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "academy.mischok.persondatabase.Main"
+    }
 }
